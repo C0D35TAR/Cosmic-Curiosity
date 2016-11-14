@@ -1,39 +1,102 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class mercuryOrbit : MonoBehaviour
 {
     public float orbitSpeed = 10;
 
-    public Transform planetNamePos;
-    public string planetName;
-
+    private GameObject mercury;
+    private GameObject mercuryText;
     Camera cam;
-    Vector2 screenPos;
-    GUIText planetGUI;
+
+    GameObject mercuryCanvas;
+    private bool interaction;
+    private Text txtRef;
+
+    public bool isInteracting;
+    public bool infoScreen;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         cam = Camera.main;
-        planetNamePos = GameObject.Find("Mercury").transform;
-        planetGUI = GetComponent<GUIText>();
+        mercury = GameObject.Find("Mercury");
+        mercuryText = GameObject.Find("MercuryText");
+
+        interaction = false;
+        mercuryCanvas = GameObject.Find("MercuryCanvas");
+        txtRef = GameObject.Find("MercuryPopUp").GetComponent<Text>();
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
+        Debug.Log(interaction);
+        Debug.Log(Time.timeScale);
+
+        if (interaction == true)
+        {
+            mercuryCanvas.SetActive(true);
+            if (Input.GetKeyDown("r"))
+            {
+                Time.timeScale = 0;
+                infoScreen = true;
+            }
+            isInteracting = true;
+        }
+
+        if (interaction == false)
+        {
+            mercuryCanvas.SetActive(false);
+            isInteracting = false;
+        }
+
+        /*
+        if (infoScreen == true)
+        {
+            if(Input.GetKeyDown("r"))
+            {
+                Time.timeScale = 1.0f;
+            }
+        }
+        */
+
         transform.RotateAround(new Vector3(0, 0, 0), new Vector3(0, 1, 0), orbitSpeed * Time.deltaTime);
 
-        screenPos = cam.WorldToScreenPoint(planetNamePos.position);
-        //Debug.Log("The position of the Planet is: " + screenPos);
-	}
+        Vector3 vectorToMercury = (mercury.transform.position - cam.transform.position);
+        //Debug.Log(Vector3.Angle(cam.transform.forward, vectorToMercury));
+        float angle = Vector3.Angle(cam.transform.forward, vectorToMercury);
 
-    void OnGUI()
+        if (angle <= 90)
+        {
+            mercuryText.SetActive(true);
+            Vector3 newpos = cam.WorldToScreenPoint(mercury.transform.position);
+            newpos.y = newpos.y + 40;
+            mercuryText.transform.position = newpos;
+        }
+        else
+        {
+            mercuryText.SetActive(false);
+        }
+
+    }
+
+    void OnTriggerEnter(Collider other)
     {
-        var centeredStyle = GUI.skin.GetStyle("Label");
-        centeredStyle.alignment = TextAnchor.UpperCenter;
-        planetGUI.color = Color.cyan;
-        GUI.Label(new Rect(screenPos.x, Screen.height - screenPos.y, 60, 50), planetName);
+        if (other.gameObject.name == "Player")
+        {
+
+            interaction = true;
+            txtRef.text = "PRESS 'R' TO LEARN MORE ABOUT MERCURY";
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.name == "Player")
+        {
+            interaction = false;
+        }
     }
 }

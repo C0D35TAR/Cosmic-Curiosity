@@ -3,67 +3,82 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class pauseMenuExplore : MonoBehaviour 
+public class pauseMenuExplore : MonoBehaviour
 {
-    public GameObject pausePanel;
-    private bool isPaused;
+    //public GameObject pausePanel;
+    //private bool isPaused;
     private bool isCursorLocked;
 
     public Canvas pauseMenu;
-	public Button mainMenu;
-	public Button sunText;
-	public Button mercuryText;
-	public Button venusText;
-	public Button earthText;
-	public Button marsText;
-	public Button jupiterText;
-	public Button saturnText;
-	public Button uranusText;
-	public Button neptuneText;
-	public Button plutoText;
+    public Button mainMenu;
+    public Button sunText;
+    public Button mercuryText;
+    public Button venusText;
+    public Button earthText;
+    public Button marsText;
+    public Button jupiterText;
+    public Button saturnText;
+    public Button uranusText;
+    public Button neptuneText;
+    public Button plutoText;
 
-	// Use this for initialization
-	void Start () 
-	{
-        isPaused = false;
+    // Use this for initialization
+    void Start()
+    {
+        // Time.timeScale = 1.0f;
+        //isPaused = false;
         ToggleCursorState();
 
-        pauseMenu = pauseMenu.GetComponent<Canvas> ();
-		mainMenu = mainMenu.GetComponent<Button> ();
-		sunText = sunText.GetComponent<Button> ();
-		mercuryText = mercuryText.GetComponent<Button> ();
-		venusText = venusText.GetComponent<Button> ();
-		earthText = earthText.GetComponent<Button> ();
-		marsText = marsText.GetComponent<Button> ();
-		jupiterText = jupiterText.GetComponent<Button> ();
-		saturnText = saturnText.GetComponent<Button> ();
-		uranusText = uranusText.GetComponent<Button> ();
-		neptuneText = neptuneText.GetComponent<Button> ();
-		plutoText = plutoText.GetComponent<Button> ();
-		
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
+        pauseMenu = pauseMenu.GetComponent<Canvas>();
+        mainMenu = mainMenu.GetComponent<Button>();
+        sunText = sunText.GetComponent<Button>();
+        mercuryText = mercuryText.GetComponent<Button>();
+        venusText = venusText.GetComponent<Button>();
+        earthText = earthText.GetComponent<Button>();
+        marsText = marsText.GetComponent<Button>();
+        jupiterText = jupiterText.GetComponent<Button>();
+        saturnText = saturnText.GetComponent<Button>();
+        uranusText = uranusText.GetComponent<Button>();
+        neptuneText = neptuneText.GetComponent<Button>();
+        plutoText = plutoText.GetComponent<Button>();
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        /*
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            isPaused = !isPaused; 
+        }
+
         if (isPaused)
         {
-            PauseGame(true);
+            //PauseGame(true);
+            pausePanel.SetActive(true);
+            Time.timeScale = 0;
         }
         else
         {
-            PauseGame(false);
+            //PauseGame(false);
+            pausePanel.SetActive(false);
+            Time.timeScale = 1.0f;
         }
+        */
 
+        /*
         if (Input.GetButtonDown("Cancel"))
         {
             SwitchPause();
         }
+        */
 
         CheckForInput();
         CheckIfCursorShouldBeLocked();
     }
 
+    /*
     void PauseGame(bool state)
     {
         if (state)
@@ -76,7 +91,9 @@ public class pauseMenuExplore : MonoBehaviour
         }
         pausePanel.SetActive(state);
     }
+    */
 
+    /*
     public void SwitchPause()
     {
         if (isPaused)
@@ -88,6 +105,7 @@ public class pauseMenuExplore : MonoBehaviour
             isPaused = true;
         }
     }
+    */
 
     public void MainMenu() //Loads the MainMenu Scene
     {

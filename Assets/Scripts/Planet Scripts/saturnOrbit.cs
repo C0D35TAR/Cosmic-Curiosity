@@ -1,41 +1,87 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class saturnOrbit : MonoBehaviour
 {
-
     public float orbitSpeed = 10;
 
-    public Transform planetNamePos;
-    public string planetName;
-
+    public GameObject saturn;
+    public GameObject saturnText;
     Camera cam;
-    Vector2 screenPos;
-    GUIText planetGUI;
 
+    GameObject saturnCanvas;
+    private bool interaction;
+    private Text txtRef;
+
+    public bool isInteracting;
 
     // Use this for initialization
     void Start()
     {
         cam = Camera.main;
-        planetNamePos = GameObject.Find("Saturn").transform;
-        planetGUI = GetComponent<GUIText>();
+        saturn = GameObject.Find("Saturn");
+        saturnText = GameObject.Find("SaturnText");
+
+        interaction = false;
+        saturnCanvas = GameObject.Find("SaturnCanvas");
+        txtRef = GameObject.Find("SaturnPopUp").GetComponent<Text>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (interaction == true)
+        {
+            saturnCanvas.SetActive(true);
+            if (Input.GetKeyDown("r"))
+            {
+                Time.timeScale = 0;
+            }
+            isInteracting = true;
+        }
+
+        if (interaction == false)
+        {
+            saturnCanvas.SetActive(false);
+            isInteracting = false;
+        }
+
         transform.RotateAround(new Vector3(0, 0, 0), new Vector3(0, 1, 0), orbitSpeed * Time.deltaTime);
 
-        screenPos = cam.WorldToScreenPoint(planetNamePos.position);
-        //Debug.Log("The position of the Planet is: " + screenPos);
+        Vector3 vectorToSaturn = (saturn.transform.position - cam.transform.position);
+        //Debug.Log(Vector3.Angle(cam.transform.forward, vectorToSaturn));
+        float angle = Vector3.Angle(cam.transform.forward, vectorToSaturn);
+
+        if (angle <= 90)
+        {
+            saturnText.SetActive(true);
+            Vector3 newpos = cam.WorldToScreenPoint(saturn.transform.position);
+            newpos.y = newpos.y + 40;
+            saturnText.transform.position = newpos;
+
+        }
+        else
+        {
+            saturnText.SetActive(false);
+        }
     }
 
-    void OnGUI()
+    void OnTriggerEnter(Collider other)
     {
-        var centeredStyle = GUI.skin.GetStyle("Label");
-        centeredStyle.alignment = TextAnchor.UpperCenter;
-        planetGUI.color = Color.cyan;
-        GUI.Label(new Rect(screenPos.x, Screen.height - screenPos.y, 60, 50), planetName);
+        if (other.gameObject.name == "Player")
+        {
+            interaction = true;
+            txtRef.text = "PRESS 'R' TO LEARN MORE ABOUT SATURN";
+        }
     }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.name == "Player")
+        {
+            interaction = false;
+        }
+    }
+
 }

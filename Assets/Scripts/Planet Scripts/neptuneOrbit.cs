@@ -1,41 +1,86 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class neptuneOrbit : MonoBehaviour
 {
-
     public float orbitSpeed = 10;
 
-    public Transform planetNamePos;
-    public string planetName;
-
+    public GameObject neptune;
+    public GameObject neptuneText;
     Camera cam;
-    Vector2 screenPos;
-    GUIText planetGUI;
 
+    GameObject neptuneCanvas;
+    private bool interaction;
+    private Text txtRef;
+
+    public bool isInteracting;
 
     // Use this for initialization
     void Start()
     {
         cam = Camera.main;
-        planetNamePos = GameObject.Find("Neptune").transform;
-        planetGUI = GetComponent<GUIText>();
+        neptune = GameObject.Find("Neptune");
+        neptuneText = GameObject.Find("NeptuneText");
+
+        interaction = false;
+        neptuneCanvas = GameObject.Find("NeptuneCanvas");
+        txtRef = GameObject.Find("NeptunePopUp").GetComponent<Text>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (interaction == true)
+        {
+            neptuneCanvas.SetActive(true);
+            if (Input.GetKeyDown("r"))
+            {
+                Time.timeScale = 0;
+            }
+            isInteracting = true;
+        }
+
+        if (interaction == false)
+        {
+            neptuneCanvas.SetActive(false);
+            isInteracting = false;
+        }
+
         transform.RotateAround(new Vector3(0, 0, 0), new Vector3(0, 1, 0), orbitSpeed * Time.deltaTime);
 
-        screenPos = cam.WorldToScreenPoint(planetNamePos.position);
-        //Debug.Log("The position of the Planet is: " + screenPos);
+        Vector3 vectorToNeptune = (neptune.transform.position - cam.transform.position);
+        //Debug.Log(Vector3.Angle(cam.transform.forward, vectorToNeptune));
+        float angle = Vector3.Angle(cam.transform.forward, vectorToNeptune);
+
+        if (angle <= 90)
+        {
+            neptuneText.SetActive(true);
+            Vector3 newpos = cam.WorldToScreenPoint(neptune.transform.position);
+            newpos.y = newpos.y + 40;
+            neptuneText.transform.position = newpos;
+
+        }
+        else
+        {
+            neptuneText.SetActive(false);
+        }
     }
 
-    void OnGUI()
+    void OnTriggerEnter(Collider other)
     {
-        var centeredStyle = GUI.skin.GetStyle("Label");
-        centeredStyle.alignment = TextAnchor.UpperCenter;
-        planetGUI.color = Color.cyan;
-        GUI.Label(new Rect(screenPos.x, Screen.height - screenPos.y, 60, 50), planetName);
+        if (other.gameObject.name == "Player")
+        {
+            interaction = true;
+            txtRef.text = "PRESS 'R' TO LEARN MORE ABOUT NEPTUNE";
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.name == "Player")
+        {
+            interaction = false;
+        }
     }
 }
