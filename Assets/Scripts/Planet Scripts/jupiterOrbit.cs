@@ -5,13 +5,14 @@ using System.Collections;
 public class jupiterOrbit : MonoBehaviour
 {
     public float orbitSpeed = 10;
-
     public GameObject planet;
     public GameObject planetText;
     //public GameObject InfoImage;
     public GameObject Canvas;
     public GameObject messageIn;
     public GameObject messageOut;
+    public GameObject lineRenderer;
+    public GameObject nameCreator;
     Camera cam;
 
     private bool interaction;
@@ -47,6 +48,8 @@ public class jupiterOrbit : MonoBehaviour
                     messageIn.SetActive(false);
                     messageOut.SetActive(true);
                     //InfoImage.SetActive(true);
+                    lineRenderer.SetActive(false);
+                    nameCreator.SetActive(false);
 
                 }
                 else
@@ -56,6 +59,8 @@ public class jupiterOrbit : MonoBehaviour
                     //InfoImage.SetActive(false);
                     messageIn.SetActive(true);
                     messageOut.SetActive(false);
+                    lineRenderer.SetActive(true);
+                    nameCreator.SetActive(true);
                 }
             }
             isInteracting = true;

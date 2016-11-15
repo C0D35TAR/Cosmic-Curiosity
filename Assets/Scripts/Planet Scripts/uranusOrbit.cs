@@ -12,6 +12,8 @@ public class uranusOrbit : MonoBehaviour
     public GameObject Canvas;
     public GameObject messageIn;
     public GameObject messageOut;
+    public GameObject lineRenderer;
+    public GameObject nameCreator;
     Camera cam;
 
     private bool interaction;
@@ -47,6 +49,8 @@ public class uranusOrbit : MonoBehaviour
                     messageIn.SetActive(false);
                     messageOut.SetActive(true);
                     //InfoImage.SetActive(true);
+                    lineRenderer.SetActive(false);
+                    nameCreator.SetActive(false);
 
                 }
                 else
@@ -56,6 +60,8 @@ public class uranusOrbit : MonoBehaviour
                     //InfoImage.SetActive(false);
                     messageIn.SetActive(true);
                     messageOut.SetActive(false);
+                    lineRenderer.SetActive(true);
+                    nameCreator.SetActive(true);
                 }
             }
             isInteracting = true;

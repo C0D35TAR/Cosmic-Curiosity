@@ -12,6 +12,11 @@ public class mercuryOrbit : MonoBehaviour
     public GameObject Canvas;
     public GameObject messageIn;
     public GameObject messageOut;
+    public GameObject lineRenderer;
+    public GameObject nameCreator;
+    public Transform camPosition;
+    public Transform player;
+    public Transform Test;
     Camera cam;
 
     private bool interaction;
@@ -47,7 +52,10 @@ public class mercuryOrbit : MonoBehaviour
                     messageIn.SetActive(false);
                     messageOut.SetActive(true);
                     InfoImage.SetActive(true);
-
+                    lineRenderer.SetActive(false);
+                    nameCreator.SetActive(false);
+                    //player.position = camPosition.position;
+                    //player.LookAt(Test);
                 }
                 else
                 {
@@ -56,6 +64,8 @@ public class mercuryOrbit : MonoBehaviour
                     InfoImage.SetActive(false);
                     messageIn.SetActive(true);
                     messageOut.SetActive(false);
+                    lineRenderer.SetActive(true);
+                    nameCreator.SetActive(true);
                 }
             }  
             isInteracting = true;
