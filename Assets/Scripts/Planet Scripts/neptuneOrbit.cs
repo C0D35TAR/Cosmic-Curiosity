@@ -5,66 +5,85 @@ using System.Collections;
 public class neptuneOrbit : MonoBehaviour
 {
     public float orbitSpeed = 10;
-
-    public GameObject neptune;
-    public GameObject neptuneText;
+    public GameObject planet;
+    public GameObject planetText;
+    //public GameObject InfoImage;
+    public GameObject Canvas;
+    public GameObject messageIn;
+    public GameObject messageOut;
     Camera cam;
 
-    GameObject neptuneCanvas;
     private bool interaction;
-    private Text txtRef;
-
     public bool isInteracting;
+    public bool infoScreen;
 
     // Use this for initialization
     void Start()
     {
         cam = Camera.main;
-        neptune = GameObject.Find("Neptune");
-        neptuneText = GameObject.Find("NeptuneText");
 
         interaction = false;
-        neptuneCanvas = GameObject.Find("NeptuneCanvas");
-        txtRef = GameObject.Find("NeptunePopUp").GetComponent<Text>();
+
+        //InfoImage.SetActive(false);
+        messageOut.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(interaction);
+        Debug.Log(Time.timeScale);
+
         if (interaction == true)
         {
-            neptuneCanvas.SetActive(true);
+            Canvas.SetActive(true);
             if (Input.GetKeyDown("r"))
             {
-                Time.timeScale = 0;
+                if (infoScreen == false)
+                {
+                    Time.timeScale = 0;
+                    infoScreen = true;
+                    messageIn.SetActive(false);
+                    messageOut.SetActive(true);
+                    //InfoImage.SetActive(true);
+
+                }
+                else
+                {
+                    Time.timeScale = 1;
+                    infoScreen = false;
+                    //InfoImage.SetActive(false);
+                    messageIn.SetActive(true);
+                    messageOut.SetActive(false);
+                }
             }
             isInteracting = true;
         }
 
         if (interaction == false)
         {
-            neptuneCanvas.SetActive(false);
+            Canvas.SetActive(false);
             isInteracting = false;
         }
 
         transform.RotateAround(new Vector3(0, 0, 0), new Vector3(0, 1, 0), orbitSpeed * Time.deltaTime);
 
-        Vector3 vectorToNeptune = (neptune.transform.position - cam.transform.position);
-        //Debug.Log(Vector3.Angle(cam.transform.forward, vectorToNeptune));
-        float angle = Vector3.Angle(cam.transform.forward, vectorToNeptune);
+        Vector3 vectorToPlanet = (planet.transform.position - cam.transform.position);
+        //Debug.Log(Vector3.Angle(cam.transform.forward, vectorToMercury));
+        float angle = Vector3.Angle(cam.transform.forward, vectorToPlanet);
 
         if (angle <= 90)
         {
-            neptuneText.SetActive(true);
-            Vector3 newpos = cam.WorldToScreenPoint(neptune.transform.position);
+            planetText.SetActive(true);
+            Vector3 newpos = cam.WorldToScreenPoint(planet.transform.position);
             newpos.y = newpos.y + 40;
-            neptuneText.transform.position = newpos;
-
+            planetText.transform.position = newpos;
         }
         else
         {
-            neptuneText.SetActive(false);
+            planetText.SetActive(false);
         }
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -72,7 +91,6 @@ public class neptuneOrbit : MonoBehaviour
         if (other.gameObject.name == "Player")
         {
             interaction = true;
-            txtRef.text = "PRESS 'R' TO LEARN MORE ABOUT NEPTUNE";
         }
     }
 

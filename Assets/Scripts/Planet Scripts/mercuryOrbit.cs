@@ -6,14 +6,15 @@ public class mercuryOrbit : MonoBehaviour
 {
     public float orbitSpeed = 10;
 
-    private GameObject mercury;
-    private GameObject mercuryText;
+    public GameObject planet;
+    public GameObject planetText;
+    public GameObject InfoImage;
+    public GameObject Canvas;
+    public GameObject messageIn;
+    public GameObject messageOut;
     Camera cam;
 
-    GameObject mercuryCanvas;
     private bool interaction;
-    private Text txtRef;
-
     public bool isInteracting;
     public bool infoScreen;
 
@@ -21,12 +22,11 @@ public class mercuryOrbit : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
-        mercury = GameObject.Find("Mercury");
-        mercuryText = GameObject.Find("MercuryText");
 
         interaction = false;
-        mercuryCanvas = GameObject.Find("MercuryCanvas");
-        txtRef = GameObject.Find("MercuryPopUp").GetComponent<Text>();
+
+        InfoImage.SetActive(false);
+        messageOut.SetActive(false);
     }
 
     // Update is called once per frame
@@ -37,47 +37,52 @@ public class mercuryOrbit : MonoBehaviour
 
         if (interaction == true)
         {
-            mercuryCanvas.SetActive(true);
+            Canvas.SetActive(true);
             if (Input.GetKeyDown("r"))
             {
-                Time.timeScale = 0;
-                infoScreen = true;
-            }
+                if(infoScreen == false)
+                {
+                    Time.timeScale = 0;
+                    infoScreen = true;
+                    messageIn.SetActive(false);
+                    messageOut.SetActive(true);
+                    InfoImage.SetActive(true);
+
+                }
+                else
+                {
+                    Time.timeScale = 1;
+                    infoScreen = false;
+                    InfoImage.SetActive(false);
+                    messageIn.SetActive(true);
+                    messageOut.SetActive(false);
+                }
+            }  
             isInteracting = true;
         }
 
         if (interaction == false)
         {
-            mercuryCanvas.SetActive(false);
+            Canvas.SetActive(false);
             isInteracting = false;
         }
 
-        /*
-        if (infoScreen == true)
-        {
-            if(Input.GetKeyDown("r"))
-            {
-                Time.timeScale = 1.0f;
-            }
-        }
-        */
-
         transform.RotateAround(new Vector3(0, 0, 0), new Vector3(0, 1, 0), orbitSpeed * Time.deltaTime);
 
-        Vector3 vectorToMercury = (mercury.transform.position - cam.transform.position);
+        Vector3 vectorToPlanet = (planet.transform.position - cam.transform.position);
         //Debug.Log(Vector3.Angle(cam.transform.forward, vectorToMercury));
-        float angle = Vector3.Angle(cam.transform.forward, vectorToMercury);
+        float angle = Vector3.Angle(cam.transform.forward, vectorToPlanet);
 
         if (angle <= 90)
         {
-            mercuryText.SetActive(true);
-            Vector3 newpos = cam.WorldToScreenPoint(mercury.transform.position);
+            planetText.SetActive(true);
+            Vector3 newpos = cam.WorldToScreenPoint(planet.transform.position);
             newpos.y = newpos.y + 40;
-            mercuryText.transform.position = newpos;
+            planetText.transform.position = newpos;
         }
         else
         {
-            mercuryText.SetActive(false);
+            planetText.SetActive(false);
         }
 
     }
@@ -86,9 +91,7 @@ public class mercuryOrbit : MonoBehaviour
     {
         if (other.gameObject.name == "Player")
         {
-
-            interaction = true;
-            txtRef.text = "PRESS 'R' TO LEARN MORE ABOUT MERCURY";
+            interaction = true;   
         }
     }
 

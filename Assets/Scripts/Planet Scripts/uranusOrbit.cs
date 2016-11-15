@@ -6,66 +6,85 @@ public class uranusOrbit : MonoBehaviour
 {
     public float orbitSpeed = 10;
 
-    public GameObject uranus;
-    public GameObject uranusText;
+    public GameObject planet;
+    public GameObject planetText;
+    //public GameObject InfoImage;
+    public GameObject Canvas;
+    public GameObject messageIn;
+    public GameObject messageOut;
     Camera cam;
 
-    GameObject uranusCanvas;
     private bool interaction;
-    private Text txtRef;
-
     public bool isInteracting;
+    public bool infoScreen;
 
     // Use this for initialization
     void Start()
     {
         cam = Camera.main;
-        uranus = GameObject.Find("Uranus");
-        uranusText = GameObject.Find("UranusText");
 
         interaction = false;
-        uranusCanvas = GameObject.Find("UranusCanvas");
-        txtRef = GameObject.Find("UranusPopUp").GetComponent<Text>();
+
+        //InfoImage.SetActive(false);
+        messageOut.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(interaction);
+        Debug.Log(Time.timeScale);
+
         if (interaction == true)
         {
-            uranusCanvas.SetActive(true);
+            Canvas.SetActive(true);
             if (Input.GetKeyDown("r"))
             {
-                Time.timeScale = 0;
+                if (infoScreen == false)
+                {
+                    Time.timeScale = 0;
+                    infoScreen = true;
+                    messageIn.SetActive(false);
+                    messageOut.SetActive(true);
+                    //InfoImage.SetActive(true);
+
+                }
+                else
+                {
+                    Time.timeScale = 1;
+                    infoScreen = false;
+                    //InfoImage.SetActive(false);
+                    messageIn.SetActive(true);
+                    messageOut.SetActive(false);
+                }
             }
             isInteracting = true;
         }
 
         if (interaction == false)
         {
-            uranusCanvas.SetActive(false);
+            Canvas.SetActive(false);
             isInteracting = false;
         }
 
-
         transform.RotateAround(new Vector3(0, 0, 0), new Vector3(0, 1, 0), orbitSpeed * Time.deltaTime);
 
-        Vector3 vectorToUranus = (uranus.transform.position - cam.transform.position);
-        //Debug.Log(Vector3.Angle(cam.transform.forward, vectorToUranus));
-        float angle = Vector3.Angle(cam.transform.forward, vectorToUranus);
+        Vector3 vectorToPlanet = (planet.transform.position - cam.transform.position);
+        //Debug.Log(Vector3.Angle(cam.transform.forward, vectorToMercury));
+        float angle = Vector3.Angle(cam.transform.forward, vectorToPlanet);
 
         if (angle <= 90)
         {
-            uranusText.SetActive(true);
-            Vector3 newpos = cam.WorldToScreenPoint(uranus.transform.position);
+            planetText.SetActive(true);
+            Vector3 newpos = cam.WorldToScreenPoint(planet.transform.position);
             newpos.y = newpos.y + 40;
-            uranusText.transform.position = newpos;
-
+            planetText.transform.position = newpos;
         }
         else
         {
-            uranusText.SetActive(false);
+            planetText.SetActive(false);
         }
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -73,7 +92,6 @@ public class uranusOrbit : MonoBehaviour
         if (other.gameObject.name == "Player")
         {
             interaction = true;
-            txtRef.text = "PRESS 'R' TO LEARN MORE ABOUT URANUS";
         }
     }
 
@@ -84,5 +102,4 @@ public class uranusOrbit : MonoBehaviour
             interaction = false;
         }
     }
-
 }

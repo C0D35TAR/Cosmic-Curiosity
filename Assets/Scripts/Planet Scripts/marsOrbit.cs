@@ -6,64 +6,85 @@ public class marsOrbit : MonoBehaviour
 {
     public float orbitSpeed = 10;
 
-    public GameObject mars;
-    public GameObject marsText;
+    public GameObject planet;
+    public GameObject planetText;
+    //public GameObject InfoImage;
+    public GameObject Canvas;
+    public GameObject messageIn;
+    public GameObject messageOut;
     Camera cam;
 
-    GameObject marsCanvas;
     private bool interaction;
-    private Text txtRef;
-
     public bool isInteracting;
+    public bool infoScreen;
 
     // Use this for initialization
     void Start()
     {
         cam = Camera.main;
-        mars = GameObject.Find("Mars");
-        marsText = GameObject.Find("MarsText");
 
         interaction = false;
-        marsCanvas = GameObject.Find("MarsCanvas");
-        txtRef = GameObject.Find("MarsPopUp").GetComponent<Text>();
+
+        //InfoImage.SetActive(false);
+        messageOut.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(interaction);
+        Debug.Log(Time.timeScale);
+
         if (interaction == true)
         {
-            marsCanvas.SetActive(true);
+            Canvas.SetActive(true);
             if (Input.GetKeyDown("r"))
             {
-                Time.timeScale = 0;
+                if (infoScreen == false)
+                {
+                    Time.timeScale = 0;
+                    infoScreen = true;
+                    messageIn.SetActive(false);
+                    messageOut.SetActive(true);
+                    //InfoImage.SetActive(true);
+
+                }
+                else
+                {
+                    Time.timeScale = 1;
+                    infoScreen = false;
+                    //InfoImage.SetActive(false);
+                    messageIn.SetActive(true);
+                    messageOut.SetActive(false);
+                }
             }
             isInteracting = true;
         }
 
         if (interaction == false)
         {
-            marsCanvas.SetActive(false);
+            Canvas.SetActive(false);
+            isInteracting = false;
         }
 
         transform.RotateAround(new Vector3(0, 0, 0), new Vector3(0, 1, 0), orbitSpeed * Time.deltaTime);
 
-        Vector3 vectorToMars = (mars.transform.position - cam.transform.position);
-        //Debug.Log(Vector3.Angle(cam.transform.forward, vectorToMars));
-        float angle = Vector3.Angle(cam.transform.forward, vectorToMars);
+        Vector3 vectorToPlanet = (planet.transform.position - cam.transform.position);
+        //Debug.Log(Vector3.Angle(cam.transform.forward, vectorToMercury));
+        float angle = Vector3.Angle(cam.transform.forward, vectorToPlanet);
 
         if (angle <= 90)
         {
-            marsText.SetActive(true);
-            Vector3 newpos = cam.WorldToScreenPoint(mars.transform.position);
+            planetText.SetActive(true);
+            Vector3 newpos = cam.WorldToScreenPoint(planet.transform.position);
             newpos.y = newpos.y + 40;
-            marsText.transform.position = newpos;
-
+            planetText.transform.position = newpos;
         }
         else
         {
-            marsText.SetActive(false);
+            planetText.SetActive(false);
         }
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -71,7 +92,6 @@ public class marsOrbit : MonoBehaviour
         if (other.gameObject.name == "Player")
         {
             interaction = true;
-            txtRef.text = "PRESS 'R' TO LEARN MORE ABOUT MARS";
         }
     }
 
